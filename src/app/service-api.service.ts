@@ -5,7 +5,8 @@ import {map} from 'rxjs/operators'
   providedIn: 'root'
 })
 export class ServiceAPIService {
-public GetURL:any = "http://localhost:3000/user/";
+//public GetURL:any = "http://localhost:3000/user/";
+public GetURL:any = "https://my-json-server.typicode.com/kmsundar001/userBackEnd/user"
   constructor(private http: HttpClient) { }
   public getUser() {
     return this.http.get(this.GetURL).pipe(map((res:any) => { return res }))

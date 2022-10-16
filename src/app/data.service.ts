@@ -1,7 +1,7 @@
 import { ReturnStatement } from "@angular/compiler";
 
 export class dataService{
-     // set create print
+     // set create print 
      static id:any;
      static getUserID(){
          return this.id;
