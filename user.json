@@ -1,0 +1,58 @@
+{
+  "user": [
+    {
+      "id": 0,
+      "userName": "admin",
+      "password": "admin@123",
+      "email": "admin"
+    },
+    {
+      "id": 1,
+      "name": "sundar",
+      "userName": "kmsundar",
+      "email": "kms@gmail.com",
+      "password": "sunda@01",
+      "profilePic": " ",
+      "gender": "Male",
+      "education": "BE/CSE",
+      "hobbies": [],
+      "active": false,
+      "delStatus": false
+    },
+    {
+      "id": 2,
+      "name": "test2",
+      "userName": "test22",
+      "email": "test2@gmail.com",
+      "password": "Test@001",
+      "profilePic": "test22(13-10-2022)",
+      "gender": "male",
+      "education": "Masters",
+      "hobbies": [
+        "Reading",
+        "Fishing"
+      ],
+      "active": true,
+      "delStatus": false
+    },
+    {
+      "id": 3,
+      "name": "ganesh",
+      "userName": "jai",
+      "email": "jai@gmail.com",
+      "password": "Test@003",
+      "profilePic": "jai(13-10-2022)",
+      "gender": "male",
+      "education": "Graduation",
+      "hobbies": [
+        "Television",
+        "Bird Watching",
+        "Music",
+        "Gardening",
+        "Crafting"
+      ],
+      "active": true,
+      "delStatus": false
+    }
+  ]
+}

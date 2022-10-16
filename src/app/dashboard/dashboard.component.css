@@ -1,0 +1,8 @@
+.headerLable{
+    color:  #fff;
+}
+.trashStyle{
+    width: 20px !important;
+    height: 20px !important;
+    cursor: pointer;
+}
