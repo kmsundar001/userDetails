@@ -4,14 +4,15 @@ import { Router } from '@angular/router';
 import { dataService } from '../data.service';
 import { ServiceAPIService } from '../service-api.service';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
-
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { finalize } from "rxjs/operators";
 @Component({
   selector: 'app-register-user',
   templateUrl: './register-user.component.html',
   styleUrls: ['./register-user.component.css']
 })
 export class RegisterUserComponent implements OnInit {
-  constructor(private router: Router, private http: HttpClient, private serverAPI: ServiceAPIService) { }
+  constructor(private router: Router, private http: HttpClient, private serverAPI: ServiceAPIService, private fireBase:AngularFireStorage ) { }
   public name: any;
   public userName: any;
   public email: any;
@@ -30,6 +31,7 @@ export class RegisterUserComponent implements OnInit {
   public submitLable = "Register";
   public editFlag:boolean = false;
   public userList:any = [];
+  public imageChangeFlag: boolean = false;
   public hobbiesArray = [
     { "name": "Reading", "checked": false },
     { "name": "Traveling", "checked": false },
@@ -58,7 +60,9 @@ export class RegisterUserComponent implements OnInit {
         this.password = getUser.password;
         this.repeatPass = getUser.password;
         this.gender = getUser.gender;
+        this.profilePic = getUser.profilePic;
         this.education = getUser.education;
+        this.usernameFlag = true;
         this.emailFlag = true;
         this.passFlag = true;
         this.rePassFlag = true;
@@ -106,92 +110,93 @@ export class RegisterUserComponent implements OnInit {
     console.log(test);
     return test;
   }
-  chooseImg(event: any) {
-    const reader = new FileReader();
-     
-    if(event.target.files && event.target.files.length) {
-      const [file] = event.target.files;
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.myForm.patchValue({
-          fileSource: reader.result
-        });
-      };
-    }
+  chooseImg($event: any) {
+      this.image = $event.target.files[0];
+      this.profilePic = $event.target.files[0];
+      this.imageChangeFlag = true;
   }
 
   async addUser() {
     console.log(this.myForm.value);
-    // this.http.post('http://localhost:8001/upload.php', this.myForm.value)
-    //   .subscribe(res => {
-    //     console.log(res);
-    //     alert('Uploaded Successfully.');
-    //   })
-    var today: any = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0');
-        var yyyy = today.getFullYear();
-        today = dd + '-' + mm + '-' + yyyy;
-        var fileName = this.userName + "(" + today + ")";
-        let uploadImg = new FormData();
-        uploadImg.set("name", fileName);
-        uploadImg.set("file", this.image);
-        this.http.post('http://localhost/demo/images/', uploadImg).subscribe(res => {
-          console.log("res" + JSON.stringify(res))
-        });
-    if (this.userName != undefined && this.emailFlag == true && this.passFlag == true && this.rePassFlag == true && this.usernameFlag) {
-      this.serverAPI.getUser().subscribe(res => {
-        console.log(res);
-        var obj = JSON.parse(JSON.stringify(res));
-        var lastId = obj.filter((x: any, i: any) => { i == (x.length - 1) }).map((x: any) => { return x.id });
-        var count = parseInt(lastId) + 1;
-        
-        var getHobbis = this.hobbiesArray.filter(x => x.checked == true).map((x) => { return x.name });
-        var sendData:any;
-        if( this.editFlag == true ){
-          sendData = {
-            "name": this.name,
-            "userName": this.userName,
-            "email": this.email,
-            "password": this.password,
-            "profilePic": fileName,
-            "gender": this.gender,
-            "education": this.education,
-            "hobbies": getHobbis,
-            "active": true,
-            "delStatus": false
-          }
-          console.log("send" + JSON.stringify(sendData))
-          this.serverAPI.updateUserAllDate(this.userId,sendData).subscribe(res => {
-            var obj = JSON.parse(JSON.stringify(res));
-            this.router.navigateByUrl("/dashboard");
-          })
 
+    if (this.userName != undefined && this.emailFlag == true && this.passFlag == true && this.rePassFlag == true && this.usernameFlag) {
+        if( this.imageChangeFlag == true ){
+          this.uploadImages();
         }else{
-          sendData = {
-            "id": count,
-            "name": this.name,
-            "userName": this.userName,
-            "email": this.email,
-            "password": this.password,
-            "profilePic": fileName,
-            "gender": this.gender,
-            "education": this.education,
-            "hobbies": getHobbis,
-            "active": true,
-            "delStatus": false
-          }
-          console.log("send" + JSON.stringify(sendData))
-          this.serverAPI.postUser(sendData).subscribe(res => {
-            var obj = JSON.parse(JSON.stringify(res));
-            dataService.setUserId(obj.id);
-            this.router.navigateByUrl("viewuser")
-          })
+          this.uploadDetails(null);
         }
-       
-      })
     } else {
       alert("!Please Fill all mandatory fields ")
     }
+  }
+  uploadDetails(image:any){
+    this.serverAPI.getUser().subscribe(res => {
+      console.log(res);
+      var obj = JSON.parse(JSON.stringify(res));
+      var lastId = obj.filter((x: any, i: any) => { i == (x.length - 1) }).map((x: any) => { return x.id });
+      var count = parseInt(lastId) + 1;
+      var fileName = image != null ? image : this.profilePic;
+      var getHobbis = this.hobbiesArray.filter(x => x.checked == true).map((x) => { return x.name });
+      var sendData:any;
+      if( this.editFlag == true ){
+        sendData = {
+          "name": this.name,
+          "userName": this.userName,
+          "email": this.email,
+          "password": this.password,
+          "profilePic": fileName,
+          "gender": this.gender,
+          "education": this.education,
+          "hobbies": getHobbis,
+          "active": true,
+          "delStatus": false
+        }
+        console.log("send" + JSON.stringify(sendData))
+        this.serverAPI.updateUserAllDate(this.userId,sendData).subscribe(res => {
+          var obj = JSON.parse(JSON.stringify(res));
+          this.router.navigateByUrl("/dashboard");
+        })
+      }else{
+        sendData = {
+          "id": count,
+          "name": this.name,
+          "userName": this.userName,
+          "email": this.email,
+          "password": this.password,
+          "profilePic": fileName,
+          "gender": this.gender,
+          "education": this.education,
+          "hobbies": getHobbis,
+          "active": true,
+          "delStatus": false
+        }
+        console.log("send" + JSON.stringify(sendData))
+        this.serverAPI.postUser(sendData).subscribe(res => {
+          var obj = JSON.parse(JSON.stringify(res));
+          dataService.setUserId(obj.id);
+          this.router.navigateByUrl("viewuser")
+        })
+      }
+     
+    })
+  }
+  uploadImages(){
+    var today: any = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = dd + '-' + mm + '-' + yyyy;
+    var fileName = this.userName + "(" + today + ")";
+    let uploadImg = new FormData();
+    uploadImg.set("name", fileName);
+    uploadImg.set("file", this.image);
+    const fileRef = this.fireBase.ref(this.userName+today);
+    this.fireBase.upload(this.userName+today,this.image).snapshotChanges().pipe(
+      finalize(() => {
+        fileRef.getDownloadURL().subscribe((url) => {
+          this.uploadDetails(url);
+        })
+      })
+    ).subscribe();
   }
 }

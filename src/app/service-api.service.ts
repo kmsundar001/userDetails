@@ -6,7 +6,8 @@ import {map} from 'rxjs/operators'
 })
 export class ServiceAPIService {
 //public GetURL:any = "http://localhost:3000/user/";
-public GetURL:any = "https://my-json-server.typicode.com/kmsundar001/userBackEnd/user"
+public GetURL:any = "https://dataservice01.herokuapp.com/user/"
+// public GetURL:any = "https://my-json-server.typicode.com/kmsundar001/userBackEnd/user"
   constructor(private http: HttpClient) { }
   public getUser() {
     return this.http.get(this.GetURL).pipe(map((res:any) => { return res }))
@@ -20,9 +21,7 @@ public GetURL:any = "https://my-json-server.typicode.com/kmsundar001/userBackEnd
   public updateUserAllDate( id:any, data: any) {
     return this.http.put(this.GetURL+id,data).pipe(map((res:any) => { return res }))
   }
-  public deleteUser(id:any, data: any) {
-    var headers = new HttpHeaders();
-    headers.append('Content-Type', 'application/json');
-    return this.http.delete(this.GetURL+id);
+  public deleteUser(id:any) {
+    return this.http.delete(this.GetURL+id).pipe(map((res:any) => { return res }))
   }
 }

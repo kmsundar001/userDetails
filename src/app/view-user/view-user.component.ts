@@ -18,6 +18,7 @@ export class ViewUserComponent implements OnInit {
   public repeatPass: any;
   public oldPass: any;
   public id: any;
+  public profileImg:any;
   constructor(private router: Router, private http: HttpClient, private serverAPI: ServiceAPIService) { }
   async ngOnInit() {
     this.id = dataService.getUserID();
@@ -25,8 +26,8 @@ export class ViewUserComponent implements OnInit {
       console.log(res);
       var obj = JSON.parse(JSON.stringify(res));
       this.count = res.length - 1; // for minus the andmin count
-      this.userDetailsArray = obj.filter((x: any) => { return x.id == this.id });
-      
+      this.userDetailsArray = obj.filter((x: any) => { this.profileImg = x.profilePic; return x.id == this.id; });
+
     })
   }
   checkValidation(type: string) {

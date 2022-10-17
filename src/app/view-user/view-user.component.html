@@ -2,6 +2,11 @@
 <div class="loginCover">
     <!-- Email input -->
     <h4 class="text-uppercase text-center mb-5">Profile Details</h4>
+    <div >
+      <div class="proFileImage">
+           <img [src]="profileImg"  alt="">
+      </div>
+   </div>
     <table *ngFor=" let user of userDetailsArray " style="width: 100%;">
         <tr> 
             <td class="userLable"> User Name</td> <td>: {{user.userName}}</td>
@@ -54,12 +59,12 @@
             <div class="form-outline mb-4 elementsCover">
                 <label class="form-label" for="form2Example2">New Password</label>
                 <input type="password" id="form2Example2" [(ngModel)]="password" (keyup)="checkValidation('pass')" class="form-control" />
-                <img [src]="passFlag ? '../../assets/images/success.png' : '../../assets/images/invalied.png'" class="validationImg" id="passImg" alt="">
+                <img [src]="passFlag ? 'https://spng.pngfind.com/pngs/s/42-423686_clipart-transparent-check-mark-computer-icons-royalty-green.png' : 'https://image.similarpng.com/very-thumbnail/2021/06/Cross-mark-icon-in-red-color-on-transparent-background-PNG.png'" class="validationImg" id="passImg" alt="">
             </div>
             <div class="form-outline mb-4 elementsCover">
                 <label class="form-label" for="form2Example2">Confirm Password</label>
                 <input type="password" id="form2Example2" class="form-control"  [(ngModel)]="repeatPass" (keyup)="checkValidation('rePass')" />
-                <img [src]="rePassFlag ? '../../assets/images/success.png' : '../../assets/images/invalied.png'"  class="validationImg" id="rePassImg" alt="">
+                <img [src]="rePassFlag ? 'https://spng.pngfind.com/pngs/s/42-423686_clipart-transparent-check-mark-computer-icons-royalty-green.png' : 'https://image.similarpng.com/very-thumbnail/2021/06/Cross-mark-icon-in-red-color-on-transparent-background-PNG.png'"  class="validationImg" id="rePassImg" alt="">
             </div>
           
         </div>
